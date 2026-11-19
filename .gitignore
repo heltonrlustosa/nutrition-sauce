@@ -1,0 +1,37 @@
+# Binários compilados
+nutrition-sauce-server
+*.exe
+
+# Dependências Go
+vendor/
+*.mod
+*.sum
+
+# Logs e temp
+*.log
+tmp/
+temp/
+*.tmp
+
+# IDE e editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testes (opcional - pode-se querer commitar)
+coverage.out
+coverage.html
+
+# Ambiente
+.env
+
+# Docker (se for usado separadamente)
+Dockerfile
+
+# macOS
+.DS_Store
+
+# Go cache
+go/pkg/
