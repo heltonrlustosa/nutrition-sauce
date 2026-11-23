@@ -20,7 +20,7 @@ sequenceDiagram
     Repo->>JSONData: Load data if not cached
     Note right of JSONData: File read (synchronous)
     
-    opt Cache hit
+    alt Cache hit
         Repo-->>Repo: Return from memory cache
     else Cache miss
         Repo->>JSONData: Read nutrition_data.json
