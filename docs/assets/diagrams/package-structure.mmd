@@ -1,0 +1,49 @@
+---
+title: Go Package Structure
+type: mindmap
+---
+
+mindmap
+  root("nutraben-mcp")
+    cmd
+      server
+        main.go
+    internal
+      domain
+        food
+          food.go
+          food_repo.go
+          recipe.go
+        nutrition
+          nutrition_calc.go
+          units.go
+      application
+        usecases
+          food_search_usecase.go
+          nutrition_calc_usecase.go
+      infrastructure
+        data
+          file_repository.go
+          json_repository.go
+        mcp
+          server.go
+          transport.go
+          json_handler.go
+      config
+        config.go
+    pkg
+      api
+        handlers.go
+    docs
+      adr
+        001-platform-and-architecture.md
+        002-data-storage.md
+      assets
+        diagrams
+          clean-arch.svg
+          sequence-diagram.mmd
+          component-diagram.mmd
+        examples
+    config
+      config.yaml
+      .env.example

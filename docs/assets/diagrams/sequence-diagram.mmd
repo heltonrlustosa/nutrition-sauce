@@ -1,0 +1,35 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#369eff', 'secondaryColor': '#f5f5f5'}}}%%
+
+sequenceDiagram
+    participant Agent as AI Agent
+    participant MCPClient as MCP Client
+    participant Transport as HTTP Transport
+    participant Handler as HTTP Handler
+    participant UseCase as Food Search UseCase
+    participant Repo as Food Repository
+    participant JSONData as JSON File
+    
+    Agent->>MCPClient: /api/v1/food/search?query=chicken
+    MCPClient->>Transport: GET /api/v1/food/search
+    Transport->>Handler: ServeRequest()
+    Handler->>UseCase: Search(food string)
+    
+    UseCase->>Repo: Search(food string)
+    Note right of Repo: Query JSON file, parse & filter
+    
+    Repo->>JSONData: Load data if not cached
+    Note right of JSONData: File read (synchronous)
+    
+    opt Cache hit
+        Repo-->>Repo: Return from memory cache
+    else Cache miss
+        Repo->>JSONData: Read nutrition_data.json
+        par Process results
+            Repo-->>UseCase: []*Food filtered results
+        end
+    end
+    
+    UseCase-->>Handler: Response
+    Handler-->>Transport: HTTP 200 + JSON body
+    Transport-->>MCPClient: MCP response (JSON)
+    MCPClient-->>Agent: Structured nutrition data

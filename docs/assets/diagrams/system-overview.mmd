@@ -1,0 +1,52 @@
+---
+title: System Overview - NutriBen MCP
+type: block
+---
+
+blockDiagram2
+    title["NutriBen MCP System"]
+    
+    subgraph "AI Agent Environment"
+        user[User]
+        ai_agent[Aware of Tools] as AI_Agent
+        
+        Host("MCP Host Application")
+        Client("MCP Client")
+    end
+    
+    subgraph "NutriBen MCP Server"
+        mcp_server[MCP Server]
+        
+        package "Internal Components" {
+            domain["Domain Layer"]
+                food_entity[Food Entity]
+                nutrition_calc[Nutrition Calculator]
+            end
+            
+            application["Application Layer"]
+                search_usecase[Food Search Use Case]
+                calc_usecase[Cook Recipe Use Case]
+            end
+            
+            infra["Infrastructure Layer"]
+                mcp_impl[MCP Transport]
+                json_repo[JSON Repository]
+                data_store[File Data Store]
+            end
+        }
+        
+        mcp_server --> domain : Interfaces only
+        mcp_server --> application : Port usage
+        mcp_server --> infra : Implementation
+    end
+    
+    subgraph "External Systems"
+        vector_index["Vector DB (Optional)"]
+        file_data["Local JSON Data"]
+    end
+    
+    user --> AI_Agent
+    Host --> Client
+    Client --> mcp_server : JSON-RPC
+    
+    mcp_server --> data_store : Read food data

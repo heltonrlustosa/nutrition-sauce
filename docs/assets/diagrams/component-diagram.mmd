@@ -1,0 +1,108 @@
+%%{init: {'theme': 'base', 'themeVariables': {}}}%%
+
+classDiagram
+    class Agent {
+        +searchFood(query string)
+        +analyzeRecipe(recipe Recipe)
+    }
+    
+    class MCPClient {
+        +connect(server Server)
+        +sendRequest(req Request)
+    }
+    
+    class TransportLayer {
+        -httpListener HTTPListener
+        -jsonrpcHandler JSONRPC
+    }
+    
+    class Handler {
+        +handleSearchFood()
+        +handleGetFoodById()
+        +handleCalculateNutrition()
+    }
+    
+    class UseCase {
+        <<usecase>>
+        +search(food string) []*Food
+        +calculateNutrition(recipe Recipe) Nutrition
+    }
+    
+    class FoodEntity {
+        -id string
+        -name string
+        -category CategoryType
+        -serving_size ServingSize
+        -base_amount float64
+        +GetByID(id) *Food
+    }
+    
+    class RecipeEntity {
+        -id string
+        -name string
+        -ingredients []Ingredient
+    }
+    
+    class Ingredient {
+        -food_id string
+        -amount float64
+        -unit ServingSize
+    }
+    
+    class FoodRepository {
+        <<interface>>
+        +GetByID(id string) (*Food, error)
+        +Search(food string) ([]*Food, error)
+        +GetByCategory(cat CategoryType) []*Food
+    }
+    
+    class NutritionCalculator {
+        <<interface>>
+        +CalculateFood(*Food, float64) *Nutrition
+        +CalculateRecipe(*Recipe) *Nutrition
+    }
+    
+    class JsonRepository {
+        -dataDir string
+        -foodMap map[string]*Food
+        +Initialize() error
+        +GetByID(id string) (*Food, error)
+    }
+    
+    class NutritionCalcImpl {
+        -nutritionData map[string]Nutrients
+        +CalculateMacros(macros *Macros) *Nutrition
+        +CalculateMicros(food *Food) *Micronutrients
+    }
+    
+    class ConfigParser {
+        -configFile string
+        +Load() *Config
+    }
+    
+    class Server {
+        -port int
+        -debug bool
+        +Start() error
+        +Stop() error
+    }
+    
+    class MainEntry {
+        +bootstrap() Server
+        +run() error
+    }
+
+    Agent --> MCPClient : sends requests
+    MCPClient --> TransportLayer : connects to HTTP port
+    TransportLayer --> Handler : routes requests
+    Handler --> UseCase : calls usecases
+    UseCase --> FoodRepository : depends on interface
+    UseCase --> NutritionCalculator : depends on interface
+    FoodRepository ..> JsonRepository : implements
+    NutritionCalculator ..> NutritionCalcImpl : implements
+    JsonRepository ..> FoodEntity : stores data
+    NutritionCalcImpl ..> NutritionEntity : calculates
+
+    MainEntry --> Server : creates and starts
+    MainEntry --> ConfigParser : loads config
+    Server .> TransportLayer : owns instance
