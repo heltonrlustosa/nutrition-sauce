@@ -31,7 +31,6 @@ An [MCP](https://modelcontextprotocol.io/) server written in Go that provides co
 |---------|-------------|
 | **Nutritional Data** | Complete macronutrient and micronutrient information |
 | **Food Search** | Search by name, category, or specific nutrients |
-| **Recipe Support** | Nutritional breakdown for complete dishes |
 | **Unit Conversion** | Flexible serving size and unit handling |
 | **Structured Output** | MCP-compliant responses for easy agent parsing |
 
